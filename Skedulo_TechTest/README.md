@@ -1,1 +1,0 @@
-# Skedulo_TechTest
