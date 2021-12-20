@@ -1,0 +1,22 @@
+<apex:page controller="SearchController">
+    <apex:form >
+        
+        <apex:pageblock title="Input The Account/Contact Name Here">
+            <apex:inputText value="{!key}"/>
+            <apex:commandButton value="Search" action="{!search_now}"/>
+        </apex:pageblock>
+        
+        <apex:pageBlock title="Search Result" id="contacts_list">
+             <apex:pageBlockTable value="{!searchResults}" var="rs">
+                <apex:column headerValue="Record Name"  value="{! rs.name }"/>
+                <apex:column headerValue="Record Type"  value="{! rs.type }"/>       
+                 <apex:column headerValue="Click to open" >
+                	<apex:outputLink onclick="window.open('/lightning/r/Account/{! rs.id }/view')" >
+                  	 View
+                	</apex:outputLink>
+       		 	</apex:column>
+			</apex:pageBlockTable>
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>

@@ -1,0 +1,33 @@
+// The trigger uses to decrement and increment the value of feld Total Contacts on the Account
+// decrement by 1 : in case user deletes the contact
+// increment by 1 : in case user approves the contact. That is, the active flag is changed to true
+// 
+trigger ActiveContactTrigger on Contact (after update, after insert, before delete) {
+    Set<Id> lstAccountId = new Set<Id>();
+    Boolean isDeleteTrans = Trigger.isDelete;
+    // check whether the transaction is the deletion or not
+    List<Contact> lstContact = isDeleteTrans ? Trigger.Old : Trigger.New;
+    
+	for(Contact contact : lstContact) {
+         if(contact.Active__c == true){
+             // the active contract has been aprroved or deleted
+             lstAccountId.add(contact.AccountId);
+         }
+     }
+    
+    List<Account> lstAccountToUpdate = [SELECT Id,Total_Contacts__c FROM Account WHERE Id IN :lstAccountId];
+    if(lstAccountToUpdate.size() > 0){
+        for (Account acccount : lstAccountToUpdate) {
+            if(acccount != null && acccount.Total_Contacts__c != null){
+                if(isDeleteTrans){
+                    // decrement Total contact by 1
+                    acccount.Total_Contacts__c -= 1;
+                } else {
+                    // increment Total contact by 1
+                    acccount.Total_Contacts__c += 1;
+            	}
+            }
+        }
+   	 update lstAccountToUpdate;
+	}
+}
